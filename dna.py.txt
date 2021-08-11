@@ -1,0 +1,66 @@
+import sys
+import csv
+
+# checking number of arguments
+if not len(sys.argv) == 3:
+    print("Usage: python dna.py data.csv sequence.txt")
+    sys.exit(1)
+
+# reading csv file with dna records
+types = []
+key = []
+val = []
+data = {}
+
+# reading dna strand
+with open(sys.argv[2], 'r') as sequence:
+    Seq = csv.reader(sequence)
+    for row in Seq:
+        seq = row
+
+with open(sys.argv[1], 'r') as file:
+    var = csv.reader(file)
+
+    # getting a list of the types of dna
+    for row in var:
+        num_str = len(row) - 1
+        for i in range(1, num_str+1):
+            types.append(row[i])
+        break
+
+    # creating a dictionary key = dna as string, val = name of person
+    for row in var:
+        val.append(row[0])
+        row.pop(0)
+        rowtostr = "".join([str(elem) for elem in row])
+        key.append(rowtostr)
+i = 0
+for k in key:
+    data[k] = val[i]
+    i += 1
+
+comp = ''
+seq = str(seq)
+
+# checking if dna match exists
+for i in range(0, len(types)):
+    STR = types[i]
+    l = len(STR)
+    maxm = 0
+    k = 0
+    while k < len(seq):
+        tmp = k
+        rep = 0
+        # count repetitions
+        while seq[tmp: tmp+l] == STR:
+            tmp += l
+            rep += 1
+            
+        if rep > maxm:
+            maxm = rep
+        k += 1
+        if len(seq) - k < l:
+            break
+    comp += str(maxm)
+
+print(data.get(comp, 'No match'))
